@@ -6,7 +6,14 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a935d613-8ab5-43d7-b085-612f8f8df9a8" name="Default Changelist" comment="" />
+    <list default="true" id="a935d613-8ab5-43d7-b085-612f8f8df9a8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/dbservlet/AllServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/dbservlet/AllServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/dbservlet/XmlPrasing.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/dbservlet/XmlPrasing.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/MVC_test_war_exploded/WEB-INF/classes/dbservlet/AllServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/MVC_test_war_exploded/WEB-INF/classes/dbservlet/AllServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/MVC_test_war_exploded/WEB-INF/classes/dbservlet/XmlPrasing.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/MVC_test_war_exploded/WEB-INF/classes/dbservlet/XmlPrasing.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dbservlet/AllServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/dbservlet/AllServlet.java" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/build/classes/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,8 +42,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/dbservlet/AllServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="439">
-              <caret line="286" column="48" lean-forward="true" selection-start-line="286" selection-start-column="48" selection-end-line="286" selection-end-column="48" />
+            <state relative-caret-position="324">
+              <caret line="297" column="43" selection-start-line="297" selection-start-column="43" selection-end-line="297" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#4238#4251#0" expanded="true" />
@@ -48,7 +55,9 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WebContent/update1.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1638" />
+            <state relative-caret-position="78">
+              <caret line="66" column="22" lean-forward="true" selection-start-line="66" selection-start-column="22" selection-end-line="66" selection-end-column="22" />
+            </state>
           </provider>
         </entry>
       </file>
@@ -120,6 +129,7 @@
   </component>
   <component name="Git.Settings">
     <option name="ROOT_SYNC" value="DONT_SYNC" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -151,6 +161,7 @@
     <option name="width" value="1448" />
     <option name="height" value="781" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -324,16 +335,23 @@
       <option name="presentableId" value="Default" />
       <updated>1601134909179</updated>
       <workItem from="1601134972906" duration="21179000" />
-      <workItem from="1601188996015" duration="7422000" />
+      <workItem from="1601188996015" duration="11067000" />
     </task>
+    <task id="LOCAL-00001" summary="haha">
+      <created>1601196677853</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1601196677854</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28601000" />
+    <option name="totallyTimeSpent" value="32246000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1563" height="845" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25315616" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -345,13 +363,13 @@
       <window_info id="Web" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32913166" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32819074" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Application Servers" order="7" weight="0.32913166" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="8" visible="true" weight="0.32959327" />
       <window_info anchor="bottom" id="Docker" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Messages" order="11" weight="0.32913166" />
@@ -373,8 +391,12 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="haha" />
+    <option name="LAST_COMMIT_MESSAGE" value="haha" />
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/MVC_test$putin_jsp.ic" NAME="putin.jsp Coverage Results" MODIFIED="1601193993046" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/MVC_test$putin_jsp.ic" NAME="putin.jsp Coverage Results" MODIFIED="1601199850504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/WebContent/META-INF/MANIFEST.MF">
@@ -416,21 +438,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/bean/StudentInfo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="7" column="35" lean-forward="true" selection-start-line="7" selection-start-column="35" selection-end-line="7" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/selectnothing.jsp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-312" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WebContent/update1.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1638" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/delete.jsp">
@@ -464,10 +474,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/bean/StudentInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="7" column="35" lean-forward="true" selection-start-line="7" selection-start-column="35" selection-end-line="7" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/update1.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="78">
+          <caret line="66" column="22" lean-forward="true" selection-start-line="66" selection-start-column="22" selection-end-line="66" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/dbservlet/AllServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="439">
-          <caret line="286" column="48" lean-forward="true" selection-start-line="286" selection-start-column="48" selection-end-line="286" selection-end-column="48" />
+        <state relative-caret-position="324">
+          <caret line="297" column="43" selection-start-line="297" selection-start-column="43" selection-end-line="297" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#4238#4251#0" expanded="true" />

@@ -267,11 +267,20 @@ public class AllServlet extends HttpServlet{
     public void delete(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException, ServletException, IOException{
     	Connection conn=null;
     	Statement stat=null;
-    	conn=connect();
- 		stat=conn.createStatement();
  		String id2=request.getParameter("id");
-		stat.execute("delete from student where student_id="+id2+"");
-		request.getRequestDispatcher("delete.jsp").forward(request, response);
+		int id=Integer.parseInt(id2);
+		if(id<10000 ) {
+			conn = connect();
+			stat = conn.createStatement();
+			stat.execute("delete from student where "+list1.get(0)+"=" + id2 + "");
+			request.getRequestDispatcher("delete.jsp").forward(request, response);
+		}else
+		{
+			conn = connect2();
+			stat = conn.createStatement();
+			stat.execute("delete from student where "+list2.get(0)+"=" + id2 + "");
+			request.getRequestDispatcher("delete.jsp").forward(request, response);
+		}
     } 
     //信息修改方法
     public void update1(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException, ServletException, IOException{
@@ -287,11 +296,25 @@ public class AllServlet extends HttpServlet{
         String age3=request.getParameter("age");
         String gender3=request.getParameter("gender");
         String major3=request.getParameter("major");
-    	conn=connect();
- 		stat=conn.createStatement();
-		stat.execute("update student set student_id="+id3+",student_name='"+name3+"',student_age="+age3+",student_gender='"+gender3+"',student_major='"+major3+"' where student_id="+id3+"");
-		request.setAttribute("result", select(id3,""));    
-	    request.getRequestDispatcher("update.jsp").forward(request, response); 
+        int id=Integer.parseInt(id3);
+        System.out.println(id);
+        if(id<10000 ) {
+			conn = connect();
+			stat = conn.createStatement();
+			System.out.println("update student set " +list1.get(0)+" = " + id3 + ","+list1.get(1)+" = " + "'"+name3+"'" + ", "+list1.get(2)+" = " + age3 + ", "+list1.get(3)+" = " + "'"+gender3+"'" + ", "+list1.get(4)+" = " + "'"+major3 +"'"+ " where "+list1.get(0)+" = " + id3);
+			stat.execute("update student set " +list1.get(0)+" = " + id3 + ","+list1.get(1)+" = " + "'"+name3+"'" + ", "+list1.get(2)+" = " + age3 + ", "+list1.get(3)+" = " + "'"+gender3+"'" + ", "+list1.get(4)+" = " + "'"+major3 +"'"+ " where "+list1.get(0)+" = " + id3);
+			request.setAttribute("result", select(id3, ""));
+			request.getRequestDispatcher("update.jsp").forward(request, response);
+		}
+        else
+		{
+			conn = connect2();
+			stat = conn.createStatement();
+			System.out.println("update student set " +list2.get(0)+" = " + id3 + ","+list2.get(1)+" = " + "'"+name3+"'" + ", "+list2.get(2)+" = " + age3 + ", "+list2.get(3)+" = " + "'"+gender3+"'" + ", "+list2.get(4)+" = " + "'"+major3 +"'"+ " where "+list2.get(0)+" = " + id3);
+			stat.execute("update student set " +list2.get(0)+" = " + id3 + ","+list2.get(1)+" = " + "'"+name3+"'" + ", "+list2.get(2)+" = " + age3 + ", "+list2.get(3)+" = " + "'"+gender3+"'" + ", "+list2.get(4)+" = " + "'"+major3 +"'"+ " where "+list2.get(0)+" = " + id3);
+			request.setAttribute("result", select(id3, ""));
+			request.getRequestDispatcher("update.jsp").forward(request, response);
+		}
     } 
  
 }
