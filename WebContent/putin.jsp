@@ -63,8 +63,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <h4>  性别：<input type="radio" name="gender" value="男">男
             <input type="radio" name="gender" value="女">女<br></h4>
 <h4>  专业：<input type="text" name="major"title="专业不能为空"></input><br></h4>
-     <h4>  选择插入的数据库：<input type="radio" name="database" value="数据库1">数据库1
-         <input type="radio" name="database" value="数据库2">数据库2<br></h4>
  <input type="submit" value="提交"/>
   </form>
       <h4> 提交是0号方法 也就是数据库的插入 </h4>

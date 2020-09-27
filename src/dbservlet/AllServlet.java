@@ -108,19 +108,19 @@ public class AllServlet extends HttpServlet{
         String age=request.getParameter("age");
         String gender=request.getParameter("gender");
         String major=request.getParameter("major");
-        String database=request.getParameter("database");
 		conn=connect();
 		stat=conn.createStatement();
 		Connection conn2=null;
 		Statement stat2=null;
 		conn2=connect2();
 		stat2=conn2.createStatement();
-		if(database.equals("数据库1")) {
+		int ID=Integer.parseInt(id);
+		if(ID<10000) {
 			stat.execute("insert into student(student_id,student_name,student_age,student_gender,student_major) values(" + id + ",'" + name + "'," + age + ",'" + gender + "','" + major + "')");
 			close(stat, conn);
 			close(stat2, conn2);
 		}
-		else if(database.equals("数据库2"))
+		else
 		{
 			stat2.execute("insert into student(studentId,studentName,studentAge,studentGender,studentMajor) values(" + id + ",'" + name + "'," + age + ",'" + gender + "','" + major + "')");
 			close(stat2, conn2);
