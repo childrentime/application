@@ -1,3 +1,3 @@
 # application
 # 说明
-https://www.yuque.com/wulianwen/kupxzo/nadyya/edit
+https://www.yuque.com/wulianwen/kupxzo/nadyya
