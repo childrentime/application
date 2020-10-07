@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--mapper 根元素标签-->
-<mapper>
-    <id>studentId</id>
-    <property>studentName</property>
-    <property>studentAge</property>
-    <property>studentGender</property>
-    <property>studentMajor</property>
-</mapper>

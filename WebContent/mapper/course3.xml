@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><mapper>
+<property>student_id</property>
+<property>student_name</property>
+<property>student_age</property>
+<property>student_gender</property>
+<property>student_major</property>
+</mapper>

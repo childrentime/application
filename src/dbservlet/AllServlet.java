@@ -1,11 +1,8 @@
 package dbservlet;
 
+import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
  
@@ -13,9 +10,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
- 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import bean.Page;
 import bean.StudentInfo;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import static dbservlet.XmlPrasing.parsingXMLByCurAll;
 
@@ -135,7 +141,9 @@ public class AllServlet extends HttpServlet{
 		stat=conn.createStatement();
 		ArrayList<StudentInfo> result=new ArrayList<StudentInfo>();
 		//声明xml对象
-		String xml="C:\\Users\\Administrator\\Desktop\\MVC-test\\MVC-test\\WebContent\\mapper\\course1.xml";
+		String xml="C:\\Users\\Administrator\\Desktop\\MVC-test\\MVC-test\\WebContent\\mapper\\course3.xml";
+		//生成xml
+		createXml(conn,xml);
 		list1=parsingXMLByCurAll(xml);
 		if(id==""&&name==""){
 			rs=stat.executeQuery("select * from student");
@@ -173,7 +181,9 @@ public class AllServlet extends HttpServlet{
 		conn2=connect2();
 		stat2=conn2.createStatement();
 		//声明xml对象
-		String xml2="C:\\Users\\Administrator\\Desktop\\MVC-test\\MVC-test\\WebContent\\mapper\\course2.xml";
+		String xml2="C:\\Users\\Administrator\\Desktop\\MVC-test\\MVC-test\\WebContent\\mapper\\course4.xml";
+		//生成xml
+		createXml(conn2,xml2);
 		list2=parsingXMLByCurAll(xml2);
 		if(id==""&&name==""){
 			rs2=stat2.executeQuery("select * from student");
@@ -315,6 +325,58 @@ public class AllServlet extends HttpServlet{
 			request.setAttribute("result", select(id3, ""));
 			request.getRequestDispatcher("update.jsp").forward(request, response);
 		}
-    } 
+    }
+
+    /*xml文件生成*/
+	public static void createXml(Connection conn,String path) {
+		try {
+			// 创建解析器工厂
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = factory.newDocumentBuilder();
+			Document document = db.newDocument();
+			// 不显示standalone="no"
+			document.setXmlStandalone(true);
+			/*根节点*/
+			Element mapper = document.createElement("mapper");
+			// 向mapper根节点中添加子节点property
+			List<Element> propertys=new ArrayList<>();
+			Element property = document.createElement("property");
+			Element property2 = document.createElement("property");
+			Element property3 = document.createElement("property");
+			Element property4 = document.createElement("property");
+			Element property5 = document.createElement("property");
+			propertys.add(property);
+			propertys.add(property2);
+			propertys.add(property3);
+			propertys.add(property4);
+			propertys.add(property5);
+			PreparedStatement preparedStatement = conn.prepareStatement("select * from student");
+			//结果集元数据
+			ResultSetMetaData resultSetMetaData = preparedStatement.getMetaData();
+			//表列数
+			int size = resultSetMetaData.getColumnCount();
+			List<String> columnNames = new ArrayList<>();
+			for (int i = 0; i < size; i++) {
+				columnNames.add(resultSetMetaData.getColumnName(i + 1));
+			}
+			for (int i = 0; i < size; i++) {
+				propertys.get(i).setTextContent(columnNames.get(i));
+				mapper.appendChild(propertys.get(i));
+			}
+			document.appendChild(mapper);
+			// 创建TransformerFactory对象
+			TransformerFactory tff = TransformerFactory.newInstance();
+			// 创建 Transformer对象
+			Transformer tf = tff.newTransformer();
+			// 输出内容是否使用换行
+			tf.setOutputProperty(OutputKeys.INDENT, "yes");
+			// 创建xml文件并写入内容
+			tf.transform(new DOMSource(document), new StreamResult(new File(path)));
+			System.out.println("生成xml成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("生成xml失败");
+		}
+	}
  
 }
