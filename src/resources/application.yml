@@ -1,0 +1,11 @@
+datasource:
+        database1:
+          url: jdbc:mysql://localhost:3306/course3?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+          username: root
+          password: helloworld1.cpp
+          driver-class-name:  com.mysql.cj.jdbc.Driver
+        database2:
+          url: jdbc:mysql://localhost:3306/course4?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+          username: root
+          password: helloworld1.cpp
+          driver-class-name:  com.mysql.cj.jdbc.Driver

@@ -3,9 +3,8 @@ package dbservlet;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
- 
+import java.util.*;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +19,10 @@ import javax.xml.transform.stream.StreamResult;
 
 import bean.Page;
 import bean.StudentInfo;
+import org.springframework.core.io.ClassPathResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import util.YamlUtils;
 
 import static dbservlet.XmlPrasing.parsingXMLByCurAll;
 
@@ -31,9 +32,9 @@ public class AllServlet extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private  List<String> list1;
-	private List<String> list2;
- 
+	private List<List<String>> lists=new ArrayList<>();
+
+	@Override
 	 //doPost方法
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -62,7 +63,9 @@ public class AllServlet extends HttpServlet{
 		        case 5:
 		        	dispatch(request,response);
 			        break;
-		       }
+			        default:
+					   throw new IllegalStateException("Unexpected value: " + method);
+			   }
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -72,30 +75,54 @@ public class AllServlet extends HttpServlet{
 			} 
 	}
 	//doGet方法
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException {
        doPost(request,response);
     }
-	
-	
-    //数据库连接方法
-	public Connection connect() throws ClassNotFoundException, SQLException{
-    	Connection conn=null; 
-	    Class.forName("com.mysql.jdbc.Driver");
-	    String url = "jdbc:mysql://localhost:3306/course3?"
-                + "user=root&password=helloworld1.cpp&useUnicode=true&characterEncoding=UTF8&useSSL=false";
-		conn=DriverManager.getConnection(url); 
-		return conn;
+
+    //yml文件解析
+	public List<List<String>> ymlPrasing() throws IOException
+	{
+		Map<String, Object> map = YamlUtils.yamlHandler(new ClassPathResource("resources/application.yml"));
+		List<List<String>> dataBases=new ArrayList<>();
+		for(int i=1;i<map.size()/4+1;i++)
+		{
+			List<String> temp=new ArrayList<>();
+			String url=(String)map.get("datasource.database"+i+".url");
+			String username=(String)map.get("datasource.database"+i+".username");
+			String password=(String)map.get("datasource.database"+i+".password");
+			String driver=(String)map.get("datasource.database"+i+".driver-class-name");
+			temp.add(url);
+			temp.add(username);
+			temp.add(password);
+			temp.add(driver);
+			dataBases.add(temp);
+		}
+		return dataBases;
 	}
-	//连接第二个数据流
-	public Connection connect2() throws ClassNotFoundException, SQLException{
-		Connection conn=null;
-		Class.forName("com.mysql.jdbc.Driver");
-		String url = "jdbc:mysql://localhost:3306/course4?"
-				+ "user=root&password=helloworld1.cpp&useUnicode=true&characterEncoding=UTF8&useSSL=false";
-		conn=DriverManager.getConnection(url);
-		return conn;
+
+	//数据库连接方法
+	public List<Connection> connectByYml() throws ClassNotFoundException, SQLException, IOException {
+		List<List<String>> datasources=ymlPrasing();
+		List<Connection> connections=new ArrayList<>();
+		for(int i=0;i<datasources.size();i++)
+		{
+			String url=datasources.get(i).get(0)+"&user="+datasources.get(i).get(1)+"&password="+datasources.get(i).get(2);
+			System.out.println(url);
+			System.out.println(datasources.get(i).get(3));
+			Class.forName(datasources.get(i).get(3));
+			Connection connection=DriverManager.getConnection(url);
+			connections.add(connection);
+			//声明xml对象
+			String xml="C:\\Users\\Administrator\\Desktop\\MVC-test\\MVC-test\\WebContent\\mapper\\course"+i+".xml";
+			//生成xml
+			createXml(connection,xml);
+			lists.add(parsingXMLByCurAll(xml));
+		}
+		return connections;
 	}
+
 	//关闭数据库资源
 	public void close(Statement stat,Connection conn) throws SQLException{
 		if(stat!=null){
@@ -106,115 +133,60 @@ public class AllServlet extends HttpServlet{
 	    }
 	}
 	//插入方法
-	public void insert(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException{
-    	Connection conn=null;
-    	Statement stat=null;
+	public void insert(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException, IOException {
+		List<Connection> connections = connectByYml();
 		String id=request.getParameter("id");
-        String name=request.getParameter("name");
-        String age=request.getParameter("age");
-        String gender=request.getParameter("gender");
-        String major=request.getParameter("major");
-		conn=connect();
-		stat=conn.createStatement();
-		Connection conn2=null;
-		Statement stat2=null;
-		conn2=connect2();
-		stat2=conn2.createStatement();
-		int ID=Integer.parseInt(id);
-		if(ID<10000) {
-			stat.execute("insert into student(student_id,student_name,student_age,student_gender,student_major) values(" + id + ",'" + name + "'," + age + ",'" + gender + "','" + major + "')");
-			close(stat, conn);
-			close(stat2, conn2);
-		}
-		else
-		{
-			stat2.execute("insert into student(studentId,studentName,studentAge,studentGender,studentMajor) values(" + id + ",'" + name + "'," + age + ",'" + gender + "','" + major + "')");
-			close(stat2, conn2);
-		}
+		String name=request.getParameter("name");
+		String age=request.getParameter("age");
+		String gender=request.getParameter("gender");
+		String major=request.getParameter("major");
+		int ID=Integer.parseInt(id)/10000;
+		Connection conn=connections.get(ID);
+		Statement stat=conn.createStatement();
+		stat.execute(String.format("insert into student(%s,%s,%s,%s,%s) values(%s,'%s',%s,'%s','%s')", lists.get(ID).get(0), lists.get(ID).get(1), lists.get(ID).get(2), lists.get(ID).get(3), lists.get(ID).get(4), id, name, age, gender, major));
+		close(stat, conn);
     }
     //查询方法
-    public ArrayList<StudentInfo> select(String id,String name) throws ClassNotFoundException, SQLException{
-    	Connection conn=null;
-		Statement stat=null;
-		ResultSet rs=null;
-		conn=connect();
-		stat=conn.createStatement();
-		ArrayList<StudentInfo> result=new ArrayList<StudentInfo>();
-		//声明xml对象
-		String xml="C:\\Users\\Administrator\\Desktop\\MVC-test\\MVC-test\\WebContent\\mapper\\course3.xml";
-		//生成xml
-		createXml(conn,xml);
-		list1=parsingXMLByCurAll(xml);
-		if(id==""&&name==""){
-			rs=stat.executeQuery("select * from student");
+    public ArrayList<StudentInfo> select(String id,String name) throws ClassNotFoundException, SQLException, IOException {
+		List<Connection> connections = connectByYml();
+		ArrayList<StudentInfo> studentInfos = new ArrayList<>();
+		for (int i = 0; i < connections.size(); i++) {
+			Connection connection = connections.get(i);
+			Statement stat = connection.createStatement();
+			ResultSet rs = null;
+			if (Objects.equals(id, "") && "".equals(name)) {
+				rs = stat.executeQuery("select * from student");
+			}
+			if (!"".equals(id) && Objects.equals(name, "")) {
+				rs = stat.executeQuery(String.format("select * from student where %s=%s", lists.get(i).get(0), id));
+			}
+			if ("".equals(id) && !"".equals(name)) {
+				rs = stat.executeQuery(String.format("select * from student where %s='%s'", lists.get(i).get(1), name));
+			}
+			if (!Objects.equals(id, "") && !Objects.equals(name, "")) {
+				rs = stat.executeQuery(String.format("select * from student where %s=%s and %s='%s ' ", lists.get(i).get(0), id, lists.get(i).get(1), name));
+				//rs 数据库结果集
+			}
+			if (rs != null) {
+				while (rs.next()) {
+					//此处 应该将rs 通过xml方式映射到st
+					StudentInfo st = new StudentInfo();
+					st.setId(rs.getInt(lists.get(i).get(0)));
+					st.setName(rs.getString(lists.get(i).get(1)));
+					st.setAge(rs.getInt(lists.get(i).get(2)));
+					st.setGender(rs.getString(lists.get(i).get(3)));
+					st.setMajor(rs.getString(lists.get(i).get(4)));
+					studentInfos.add(st);
+				}
+			}
+			if (rs != null) {
+				rs.close();
+			}
+			close(stat, connection);
 		}
-		if(id!=""&&name==""){
-			rs=stat.executeQuery("select * from student where "+list1.get(0)+"="+id);
-		}
-		if(id==""&&name!=""){
-			rs=stat.executeQuery("select * from student where "+list1.get(1)+"="+"'"+name+"'");
-		}
-		if(id!=""&&name!=""){
-			System.out.println("select * from student where "+list1.get(0)+"="+id +" and " +list1.get(1)+"="+"'"+name+"'");
-			rs=stat.executeQuery("select * from student where "+list1.get(0)+"="+id +" and " +list1.get(1)+"="+"'"+name+" ' ");
-			//rs 数据库结果集
-		}
-		while(rs.next())
-		{
-			//此处 应该将rs 通过xml方式映射到st
-			StudentInfo st=new StudentInfo();
-			st.setId(rs.getInt(list1.get(0)));
-			st.setName(rs.getString(list1.get(1)));
-			st.setAge(rs.getInt(list1.get(2)));
-			st.setGender(rs.getString(list1.get(3)));
-			st.setMajor(rs.getString(list1.get(4)));
-			result.add(st);
-		}
-		if(rs!=null){
-			rs.close();
-		}
-		close(stat,conn);
-		/*连接2*/
-		Connection conn2=null;
-		Statement stat2=null;
-		ResultSet rs2=null;
-		conn2=connect2();
-		stat2=conn2.createStatement();
-		//声明xml对象
-		String xml2="C:\\Users\\Administrator\\Desktop\\MVC-test\\MVC-test\\WebContent\\mapper\\course4.xml";
-		//生成xml
-		createXml(conn2,xml2);
-		list2=parsingXMLByCurAll(xml2);
-		if(id==""&&name==""){
-			rs2=stat2.executeQuery("select * from student");
-		}
-		if(id!=""&&name==""){
-			rs2=stat2.executeQuery("select * from student where "+list2.get(0)+"="+id);
-		}
-		if(id==""&&name!=""){
-			rs2=stat2.executeQuery("select * from student where "+list2.get(1)+"="+"'"+name+"'");
-		}
-		if(id!=""&&name!=""){
-			rs2=stat2.executeQuery("select * from student where "+list2.get(0)+"="+id +" and " +list2.get(1)+"="+"'"+name+" ' ");
-			//rs 数据库结果集
-		}
-		while(rs2.next())
-		{
-			//此处 应该将rs 通过xml方式映射到st
-			StudentInfo st=new StudentInfo();
-			st.setId(rs2.getInt(list2.get(0)));
-			st.setName(rs2.getString(list2.get(1)));
-			st.setAge(rs2.getInt(list2.get(2)));
-			st.setGender(rs2.getString(list2.get(3)));
-			st.setMajor(rs2.getString(list2.get(4)));
-			result.add(st);
-		}
-		if(rs2!=null){
-			rs2.close();
-		}
-		close(stat2,conn2);
-    	return result;
-    }
+		return studentInfos;
+	}
+
     //条件查询跳转
     public void dispatch(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException, ServletException, IOException{
     	String id5=request.getParameter("id");
@@ -228,7 +200,7 @@ public class AllServlet extends HttpServlet{
         }
     }
     //设置分页相关参数方法
-	public Page setpage(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException{
+	public Page setpage(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException, IOException {
 		String crd=request.getParameter("currentRecord");
 		//String id=request.getParameter("id");
       //  String name=request.getParameter("name");
@@ -275,56 +247,33 @@ public class AllServlet extends HttpServlet{
      }
     //信息删除方法
     public void delete(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException, ServletException, IOException{
-    	Connection conn=null;
-    	Statement stat=null;
+		List<Connection> connections = connectByYml();
  		String id2=request.getParameter("id");
-		int id=Integer.parseInt(id2);
-		if(id<10000 ) {
-			conn = connect();
-			stat = conn.createStatement();
-			stat.execute("delete from student where "+list1.get(0)+"=" + id2 + "");
-			request.getRequestDispatcher("delete.jsp").forward(request, response);
-		}else
-		{
-			conn = connect2();
-			stat = conn.createStatement();
-			stat.execute("delete from student where "+list2.get(0)+"=" + id2 + "");
-			request.getRequestDispatcher("delete.jsp").forward(request, response);
-		}
-    } 
-    //信息修改方法
+		int id=Integer.parseInt(id2)/10000;
+		Connection conn=connections.get(id);
+		Statement stat=conn.createStatement();
+		stat.execute(String.format("delete from student where %s=%s", lists.get(id).get(0), id2));
+		request.getRequestDispatcher("delete.jsp").forward(request, response);
+	}
+	//信息修改方法
     public void update1(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException, ServletException, IOException{
     	String id4=request.getParameter("id");
 	    request.setAttribute("result", select(id4,""));
         request.getRequestDispatcher("update1.jsp").forward(request, response);
     }   
     public void update(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException, ServletException, IOException{
-    	Connection conn=null;
-    	Statement stat=null;
+		List<Connection> connections = connectByYml();
         String id3=request.getParameter("id");
         String name3=request.getParameter("name");
         String age3=request.getParameter("age");
         String gender3=request.getParameter("gender");
         String major3=request.getParameter("major");
-        int id=Integer.parseInt(id3);
-        System.out.println(id);
-        if(id<10000 ) {
-			conn = connect();
-			stat = conn.createStatement();
-			System.out.println("update student set " +list1.get(0)+" = " + id3 + ","+list1.get(1)+" = " + "'"+name3+"'" + ", "+list1.get(2)+" = " + age3 + ", "+list1.get(3)+" = " + "'"+gender3+"'" + ", "+list1.get(4)+" = " + "'"+major3 +"'"+ " where "+list1.get(0)+" = " + id3);
-			stat.execute("update student set " +list1.get(0)+" = " + id3 + ","+list1.get(1)+" = " + "'"+name3+"'" + ", "+list1.get(2)+" = " + age3 + ", "+list1.get(3)+" = " + "'"+gender3+"'" + ", "+list1.get(4)+" = " + "'"+major3 +"'"+ " where "+list1.get(0)+" = " + id3);
-			request.setAttribute("result", select(id3, ""));
-			request.getRequestDispatcher("update.jsp").forward(request, response);
-		}
-        else
-		{
-			conn = connect2();
-			stat = conn.createStatement();
-			System.out.println("update student set " +list2.get(0)+" = " + id3 + ","+list2.get(1)+" = " + "'"+name3+"'" + ", "+list2.get(2)+" = " + age3 + ", "+list2.get(3)+" = " + "'"+gender3+"'" + ", "+list2.get(4)+" = " + "'"+major3 +"'"+ " where "+list2.get(0)+" = " + id3);
-			stat.execute("update student set " +list2.get(0)+" = " + id3 + ","+list2.get(1)+" = " + "'"+name3+"'" + ", "+list2.get(2)+" = " + age3 + ", "+list2.get(3)+" = " + "'"+gender3+"'" + ", "+list2.get(4)+" = " + "'"+major3 +"'"+ " where "+list2.get(0)+" = " + id3);
-			request.setAttribute("result", select(id3, ""));
-			request.getRequestDispatcher("update.jsp").forward(request, response);
-		}
+        int id=Integer.parseInt(id3)/10000;
+		Connection conn=connections.get(id);
+		Statement stat=conn.createStatement();
+		stat.execute(String.format("update student set %s = %s,%s = '%s', %s = %s, %s = '%s', %s = '%s' where %s = %s", lists.get(id).get(0), id3, lists.get(id).get(1), name3, lists.get(id).get(2), age3, lists.get(id).get(3), gender3, lists.get(id).get(4), major3, lists.get(id).get(0), id3));
+		request.setAttribute("result", select(id3, ""));
+		request.getRequestDispatcher("update.jsp").forward(request, response);
     }
 
     /*xml文件生成*/
@@ -378,5 +327,5 @@ public class AllServlet extends HttpServlet{
 			System.out.println("生成xml失败");
 		}
 	}
- 
+
 }
